@@ -202,14 +202,17 @@ class TestAllMethods(unittest.TestCase):
         old_wallet= self.f1.wallet
         self.f2.validate_order(self.c1, self.s1, "Taco", 60)
         self.assertEqual(self.f1.wallet, old_wallet)
+        # this case tests that the requested order will not go through (i.e. money will not be subtracted from the customers wallet- because there are not sufficent funds to purchase the goods the requested)
 		# case 1: test if a customer doesn't have enough money in their wallet to order
         old_inventory= self.s2.inventory
         self.f1.validate_order(self.c2, self.s2, "Burger", 50)
         self.assertEqual(self.s2.inventory, old_inventory)
+        #This case tests that in the case the stall does not have sufficent food to complete the order that they don't fulfill the order (this is checked through seeing of the level of inventory before and after the order attempt is the same)
 		# case 2: test if the stall doesn't have enough food left in stock
         older_inventory= self.s3.inventory
         self.f1.validate_order(self.c2, self.s3, "Taco", 1)
         self.assertEqual(self.s3.inventory, older_inventory)
+        # This case checks if the cashier is able to order things from the particular stall
 		# case 3: check if the cashier can order item from that stall
         
 
@@ -222,20 +225,30 @@ class TestAllMethods(unittest.TestCase):
     
 ### Write main function
 def main():
-    dict_1={"lettuce":4, "bananas":6, "strawberries":9}
-    dict_2={"cucumbers":7, "mushrooms":14, "cookies":21}
-    cust_1=Customer("Dane", wallet=150)
-    cust_2=Customer("Brandon", wallet=200)
-    cust_3=Customer("Kieran", wallet=10)
-    stall_1= Stall("Fresh Fruits", inventory= dict_1, cost=17)
-    stall_2= Stall("Veggie Stand", inventory= dict_2, cost=11)
+    dict_1={"lettuce":2, "bananas":10, "strawberries":7}
+    dict_2={"cucumbers":7, "mushrooms":14, "cookies":5}
+    cust_1=Customer("Dane", wallet=15)
+    cust_2=Customer("Brandon", wallet=30)
+    cust_3=Customer("Kieran", wallet=25)
+    stall_1= Stall("Fresh Fruits", inventory= dict_1, cost=10)
+    stall_2= Stall("Veggie Stand", inventory= dict_2, cost=6)
     cash_1= Cashier("Kelly", [stall_1])
     cash_2= Cashier("Lisa", [stall_1, stall_2])
-    Customer.validate_order(cust_1, cash_1, stall_2, "bananas", 4)
-    Customer.validate_order(cust_2, cash_2, stall_1, "lettuce", 7)
-    Customer.validate_order(cust_3, cash_2, stall_1, "bananas", 2)
+    Customer.validate_order(cust_1, cash_1, stall_2, "cookies", 4)
+    Customer.validate_order(cust_1, cash_2, stall_1, "lettuce", 7)
+    Customer.validate_order(cust_1, cash_2, stall_2, "mushrooms",4 )
+    Customer.validate_order(cust_1, cash_1, stall_1, "bananas", 1)
+
+    Customer.validate_order(cust_2, cash_1, stall_2, "cookies", 4)
+    Customer.validate_order(cust_2, cash_2, stall_1, "strawberries", 8)
+    Customer.validate_order(cust_2, cash_2, stall_2, "mushrooms", 6)
     Customer.validate_order(cust_2, cash_1, stall_1, "bananas", 2)
-    # Customer.validate_order(cust_1, cash_2, stall_2, "cookies", 3)
+
+    Customer.validate_order(cust_3, cash_1, stall_2, "cookies", 4)
+    Customer.validate_order(cust_3, cash_2, stall_1, "strawberries", 16)
+    Customer.validate_order(cust_3, cash_2, stall_2, "mushrooms", 5)
+    Customer.validate_order(cust_3, cash_1, stall_1, "strawberries", 1)
+
     #Create different objects 
 
     #Try all cases in the validate_order function
@@ -248,7 +261,7 @@ def main():
     
     #case 4: the customer successfully places an order
 
-
+    #still need to go through each customer for each instance
 
 if __name__ == "__main__":
 	main()

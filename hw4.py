@@ -209,9 +209,7 @@ class TestAllMethods(unittest.TestCase):
         self.assertEqual(self.s2.inventory, old_inventory)
         #This case tests that in the case the stall does not have sufficent food to complete the order that they don't fulfill the order (this is checked through seeing of the level of inventory before and after the order attempt is the same)
 		# case 2: test if the stall doesn't have enough food left in stock
-        older_inventory= self.s3.inventory
-        self.f1.validate_order(self.c2, self.s3, "Taco", 1)
-        self.assertEqual(self.s3.inventory, older_inventory)
+        self.assertTrue(self.c1.has_stall(self.s1))
         # This case checks if the cashier is able to order things from the particular stall
 		# case 3: check if the cashier can order item from that stall
         

@@ -86,7 +86,9 @@ class Stall:
 
         
     def has_item(self, name, quantity):
-        if self.inventory[name]< quantity:
+        if name not in self.inventory.keys():
+            return False
+        elif self.inventory[name]< quantity:
             return False
         else:
             return True
@@ -181,7 +183,7 @@ class TestAllMethods(unittest.TestCase):
 
 	# Check that the stall can properly see when it is empty
     def test_has_item(self):
-        self.assertEqual(self.s1.has_item("fries", 5),False)
+        self.assertEqual(self.s1.has_item("fries", 5), False)
         self.assertEqual(self.s2.has_item("Burger",45),False)
         self.assertEqual(self.s3.has_item("Burger", 10), True)
         # Set up to run test cases
@@ -197,16 +199,25 @@ class TestAllMethods(unittest.TestCase):
 
 	# Test validate order
     def test_validate_order(self):
-        self.assertEqual(self.f2.validate_order(self.c1, self.s1, "Taco", 60))
+        old_wallet= self.f1.wallet
+        self.f2.validate_order(self.c1, self.s1, "Taco", 60)
+        self.assertEqual(self.f1.wallet, old_wallet)
 		# case 1: test if a customer doesn't have enough money in their wallet to order
-        self.assertEqual
+        old_inventory= self.s2.inventory
+        self.f1.validate_order(self.c2, self.s2, "Burger", 50)
+        self.assertEqual(self.s2.inventory, old_inventory)
 		# case 2: test if the stall doesn't have enough food left in stock
-
+        older_inventory= self.s3.inventory
+        self.f1.validate_order(self.c2, self.s3, "Taco", 1)
+        self.assertEqual(self.s3.inventory, older_inventory)
 		# case 3: check if the cashier can order item from that stall
-        pass
+        
 
     # Test if a customer can add money to their wallet
     def test_reload_money(self):
+        og_wallet=self.f2.wallet+30
+        self.f2.reload_money(30)
+        self.assertEqual(og_wallet, self.f2.wallet)
         pass
     
 ### Write main function
@@ -242,4 +253,4 @@ def main():
 if __name__ == "__main__":
 	main()
 	print("\n")
-	unittest.main(verbosity = 4)
+	unittest.main(verbosity = 2)
